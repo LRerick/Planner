@@ -1,0 +1,342 @@
+:root {
+  --bg-dark: #0b0f17;
+  --bg-panel: #131b28;
+  --bg-hover: #1c273a;
+  --border-color: #27354a;
+  --accent-gold: #f59e0b;
+  --accent-blue: #38bdf8;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --font-base: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-base);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand .company-tag {
+  color: var(--accent-gold);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.brand h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.shift-indicator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badge-guardia {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* Navigation */
+.nav-tabs {
+  background: #0e1520;
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1.5rem;
+  overflow-x: auto;
+}
+
+.tab-link {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.85rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab-link:hover {
+  color: var(--text-main);
+}
+
+.tab-link.active {
+  color: var(--accent-gold);
+  border-bottom-color: var(--accent-gold);
+}
+
+/* Main Content */
+.main-content {
+  padding: 1.25rem 1.5rem;
+  flex: 1;
+}
+
+.tab-panel {
+  display: none;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tab-panel.active {
+  display: flex;
+}
+
+/* KPIs */
+.kpi-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.kpi-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-blue);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.kpi-card.alert { border-left-color: var(--danger); }
+.kpi-card.warning { border-left-color: var(--warning); }
+
+.kpi-sub {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.kpi-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0.3rem 0;
+  font-family: var(--font-mono);
+}
+
+.kpi-foot {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Panels */
+.panel-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.25rem;
+}
+
+.panel-box-header {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.panel-box-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panel-box-header .hint {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* Tables */
+.table-container {
+  overflow-x: auto;
+}
+
+.grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.grid-table th, .grid-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.grid-table th {
+  background: #0f1724;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.grid-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+/* Badges */
+.badge-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  display: inline-block;
+}
+
+.badge-ok { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.badge-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.badge-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+/* Forms */
+.form-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.field label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  background: #0a0e17;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.55rem;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary { background: var(--accent-gold); color: #000; }
+.btn-primary:hover { background: #d97706; }
+.btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+.btn-outline:hover { background: var(--border-color); }
+
+/* Dual Grid */
+.dual-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .dual-grid { grid-template-columns: 1fr; }
+}
+
+/* Contact Cards */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.contact-card {
+  background: #0f1624;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.85rem;
+}
+
+.contact-mina {
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.contact-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0.2rem 0;
+}
+
+.contact-role {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* Checklist */
+.checklist-box {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.checklist-box li {
+  background: #0e1422;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.checklist-box input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
