@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MACMINING | Sistema de Control de Mantenimiento & Valorizaciones</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Barra Superior de Mando -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="company-tag">MACMINING S.A.C.</span>
+        <h1>PLANNING & VALORIZACIÓN DE EQUIPOS EN ALQUILER</h1>
+      </div>
+      <div class="shift-indicator">
+        <span class="badge badge-guardia">GUARDIA: 07:00 - 19:00 (DÍA)</span>
+        <button id="btnQuickBackup" class="btn btn-outline">Exportar Backup JSON</button>
+      </div>
+    </header>
+
+    <!-- Navegación Modular del Planner -->
+    <nav class="nav-tabs">
+      <button class="tab-link active" data-tab="tab-control-flota">Panel de Flota & Valorizaciones</button>
+      <button class="tab-link" data-tab="tab-reporte-diario">Reporte Diario de Guardia (Parte Técnico)</button>
+      <button class="tab-link" data-tab="tab-contactos">Directorio de Mina & Contactos Clave</button>
+      <button class="tab-link" data-tab="tab-personal">Personal, EMO & SCTR (Yesenia)</button>
+    </nav>
+
+    <main class="main-content">
+      
+      <!-- ================= MODULO 1: CONTROL DE FLOTA & VALORIZACIONES ================= -->
+      <section id="tab-control-flota" class="tab-panel active">
+        <!-- KPIs Operativos -->
+        <div class="kpi-deck">
+          <div class="kpi-card">
+            <span class="kpi-sub">Equipos Alquilados</span>
+            <div class="kpi-val" id="kpiTotalEquipos">8 Equipos</div>
+            <span class="kpi-foot">6 Unidades Mineras</span>
+          </div>
+          <div class="kpi-card alert">
+            <span class="kpi-sub">Próximo Cierre Valorización</span>
+            <div class="kpi-val" id="kpiProximoCierre">22 del Mes</div>
+            <span class="kpi-foot">Incimmet (San Cristóbal / Porvenir)</span>
+          </div>
+          <div class="kpi-card warning">
+            <span class="kpi-sub">Mantenimientos Próximos (125H)</span>
+            <div class="kpi-val" id="kpiPMCount">2 Equipos</div>
+            <span class="kpi-foot">Requieren Kit de Filtros</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-sub">Disponibilidad Promedio Flota</span>
+            <div class="kpi-val text-success" id="kpiDisponibilidad">94.8%</div>
+            <span class="kpi-foot">Meta contractual: ≥ 90%</span>
+          </div>
+        </div>
+
+        <!-- Matriz Maestra de Equipos en Alquiler -->
+        <div class="panel-box">
+          <div class="panel-box-header">
+            <h3>Flota Activa, Fechas Límite de Valorización y Control PM</h3>
+            <span class="hint">Regla: El cierre de valorización detona HES, OC y Facturación</span>
+          </div>
+          <div class="table-container">
+            <table class="grid-table" id="fleetTable">
+              <thead>
+                <tr>
+                  <th>Cod. Equipo</th>
+                  <th>Modelo / Tipo</th>
+                  <th>Cliente / Contrata</th>
+                  <th>Unidad Minera</th>
+                  <th>Cierre Val.</th>
+                  <th>Horómetro Actual</th>
+                  <th>Último PM</th>
+                  <th>Próximo PM</th>
+                  <th>Estado PM</th>
+                  <th>Disponibilidad</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="fleetTableBody">
+                <!-- Inyectado por app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MODULO 2: PARTE DIARIO DE GUARDIA ================= -->
+      <section id="tab-reporte-diario" class="tab-panel">
+        <div class="dual-grid">
+          <!-- Formulario de Registro Técnico -->
+          <div class="panel-box">
+            <div class="panel-box-header">
+              <h3>Ingreso de Parte Diario de Mantenimiento</h3>
+              <span class="hint">Control de Paradas y Daños Operativos vs Fallas Mecánicas</span>
+            </div>
+            <form id="dailyReportForm" class="form-stacked">
+              <div class="form-row">
+                <div class="field">
+                  <label>Fecha de Guardia</label>
+                  <input type="date" id="repFecha" required>
+                </div>
+                <div class="field">
+                  <label>Guardia</label>
+                  <select id="repGuardia">
+                    <option value="Día (07:00 - 19:00)">Día (07:00 - 19:00)</option>
+                    <option value="Noche (19:00 - 07:00)">Noche (19:00 - 07:00)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Equipo</label>
+                  <select id="repEquipo" required></select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label>Horómetro Inicial</label>
+                  <input type="number" step="0.1" id="repHorometroIni" required>
+                </div>
+                <div class="field">
+                  <label>Horómetro Final</label>
+                  <input type="number" step="0.1" id="repHorometroFin" required>
+                </div>
+                <div class="field">
+                  <label>Diesel Inicial / Final (Gal)</label>
+                  <input type="text" id="repDiesel" placeholder="Ej: 45 / 15">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label>Condición Operativa</label>
+                  <select id="repEstado">
+                    <option value="Operativo">Operativo (Sin Paradas)</option>
+                    <option value="Inoperativo Parcial">Inoperativo Parcial (Horas Muertas)</option>
+                    <option value="Inoperativo TG">Inoperativo Toda la Guardia (TG)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Momento de Parada</label>
+                  <select id="repMomentoParada">
+                    <option value="N/A">N/A</option>
+                    <option value="IG - Inicio de Guardia">IG - Inicio de Guardia</option>
+                    <option value="TG - Toda la Guardia">TG - Toda la Guardia</option>
+                    <option value="FG - Fin de Guardia">FG - Fin de Guardia</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Horas Parado</label>
+                  <input type="number" step="0.5" id="repHorasParada" value="0">
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Tipo de Responsabilidad / Causa de Parada</label>
+                <select id="repCausaTipo">
+                  <option value="Mantenimiento Preventivo / Programado">Preventivo Programado (MACMINING)</option>
+                  <option value="Falla Mecánica / Eléctrica">Correctivo / Falla Mecánica (MACMINING)</option>
+                  <option value="Daño Operativo del Cliente">Daño Operativo (CLIENTE - No afecta Disp.)</option>
+                  <option value="Falta de Frente / Insumos">Falta de Frente / Servicios de Mina (CLIENTE)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Trabajo Realizado / Repuestos Utilizados</label>
+                <textarea id="repTrabajo" rows="2" placeholder="Detallar cambio de sellos, mangueras, filtros o inspección..."></textarea>
+              </div>
+
+              <div class="field">
+                <label>Pendientes Críticos para Próxima Guardia</label>
+                <input type="text" id="repPendientes" placeholder="Ej: Fuga leve en cilindro de viga, pedir kit de mangueras...">
+              </div>
+
+              <button type="submit" class="btn btn-primary">Registrar Parte de Guardia</button>
+            </form>
+          </div>
+
+          <!-- Historial de Partes -->
+          <div class="panel-box">
+            <div class="panel-box-header">
+              <h3>Últimos Partes Diarios Registrados</h3>
+            </div>
+            <div class="table-container small">
+              <table class="grid-table" id="dailyLogTable">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Equipo</th>
+                    <th>Horas Op.</th>
+                    <th>Parada</th>
+                    <th>Causa / Observación</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyLogTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MODULO 3: DIRECTORIO DE MINA Y VALORIZACIONES ================= -->
+      <section id="tab-contactos" class="tab-panel">
+        <div class="panel-box">
+          <div class="panel-box-header">
+            <h3>Directorio de Contactos Estratégicos (Mina, Valorizaciones, Logística)</h3>
+            <span class="hint">Quién aprueba la HES, quién genera la OC y quién valida el estado de la máquina</span>
+          </div>
+          <div class="search-bar">
+            <input type="text" id="contactSearch" placeholder="Filtrar por Mina (Porvenir, San Cristóbal, Antamina, Parcoy, etc.) o Nombre...">
+          </div>
+          <div class="contact-grid" id="contactDirectory">
+            <!-- Inyectado por app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MODULO 4: CONTROL DE PERSONAL, EMO & SCTR ================= -->
+      <section id="tab-personal" class="tab-panel">
+        <div class="dual-grid">
+          <div class="panel-box">
+            <div class="panel-box-header">
+              <h3>Estado de Afiliación & Documentos de Mecánicos</h3>
+              <span class="hint">Coordinación directa: YESENIA | Checklist: EMO, SCTR, CUL, Anexo 16</span>
+            </div>
+            <div class="table-container">
+              <table class="grid-table">
+                <thead>
+                  <tr>
+                    <th>Técnico</th>
+                    <th>Destino Mina</th>
+                    <th>EMO</th>
+                    <th>SCTR Pens./Sal.</th>
+                    <th>CUL / DNI</th>
+                    <th>Anexo 16</th>
+                    <th>Estado Acceso</th>
+                  </tr>
+                </thead>
+                <tbody id="personnelTableBody">
+                  <!-- Inyectado por app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel-box">
+            <div class="panel-box-header">
+              <h3>Checklist de Pendientes Inmediatos (Oficina & Taller)</h3>
+            </div>
+            <ul class="checklist-box" id="checklistPlanner">
+              <!-- Checklist dinámico del planner -->
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
